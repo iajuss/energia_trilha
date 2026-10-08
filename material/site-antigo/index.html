@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ravena Solar | Energia Solar em Sorocaba e Região</title>
+<meta name="description" content="Ravena Solar - Energia do futuro para sua casa ou empresa. Sistemas fotovoltaicos em Sorocaba e região.">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins','Helvetica Neue',Arial,sans-serif;color:#4a4a4a;font-size:15px;line-height:1.8}
+a{text-decoration:none;color:inherit}
+.container{max-width:1140px;margin:0 auto;padding:0 20px}
+.topbar{background:#123A55;color:#cfe0ea;font-size:13px;padding:8px 0}
+.topbar .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+header{background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.10);position:sticky;top:0;z-index:10}
+header .container{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
+header img{height:52px}
+nav ul{list-style:none;display:flex;gap:26px;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#123A55}
+nav a:hover{color:#E8721C}
+.btn{display:inline-block;background:linear-gradient(90deg,#F2A03D,#E8721C);color:#fff;padding:14px 30px;border-radius:40px;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.5px;box-shadow:0 8px 20px rgba(232,114,28,.35)}
+.btn-ghost{background:transparent;border:2px solid #fff;box-shadow:none}
+.hero{background:linear-gradient(120deg,#0d2c42 0%,#155a7a 55%,#1d8f7e 100%);color:#fff;position:relative;overflow:hidden}
+.hero .container{padding-top:110px;padding-bottom:110px;position:relative;z-index:2;max-width:760px;margin-left:auto;margin-right:auto;text-align:center}
+.hero h1{font-size:47px;line-height:1.25;font-weight:700;margin-bottom:20px;text-shadow:0 2px 12px rgba(0,0,0,.25)}
+.hero h1 span{color:#F2A03D}
+.hero p{font-size:19px;font-weight:300;margin-bottom:34px;opacity:.95}
+.hero .btn{margin:0 8px}
+.hero-deco{position:absolute;right:-60px;bottom:-40px;opacity:.18;z-index:1}
+.counters{background:#F7F9FB;padding:44px 0}
+.counters .container{display:flex;justify-content:space-between;text-align:center;flex-wrap:wrap;gap:20px}
+.counters .n{font-size:40px;font-weight:700;color:#E8721C;line-height:1.2}
+.counters .l{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:#123A55;font-weight:600}
+section{padding:80px 0}
+.section-title{text-align:center;margin-bottom:54px}
+.section-title small{color:#E8721C;text-transform:uppercase;letter-spacing:3px;font-size:12px;font-weight:600}
+.section-title h2{font-size:34px;color:#123A55;font-weight:700;margin-top:8px}
+.section-title .rule{width:70px;height:3px;background:#F2A03D;margin:18px auto 0;border-radius:3px}
+.sobre{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
+.sobre p{margin-bottom:16px;text-align:justify}
+.sobre .img{background:linear-gradient(140deg,#155a7a,#1d8f7e);border-radius:14px;min-height:330px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);font-size:13px;letter-spacing:2px;text-transform:uppercase}
+.mvv{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:60px}
+.mvv .card{background:#fff;border-radius:14px;padding:34px 26px;text-align:center;box-shadow:0 10px 34px rgba(18,58,85,.10)}
+.mvv .ico{font-size:34px;margin-bottom:12px}
+.mvv h3{color:#123A55;font-size:19px;margin-bottom:10px;font-weight:600}
+.servicos{background:#F7F9FB}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.grid6 .card{background:#fff;border-radius:14px;padding:36px 28px;box-shadow:0 10px 30px rgba(18,58,85,.08);transition:.3s}
+.grid6 .card:hover{transform:translateY(-6px)}
+.grid6 .ico{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#F2A03D,#E8721C);display:flex;align-items:center;justify-content:center;font-size:27px;margin-bottom:18px}
+.grid6 h3{color:#123A55;font-size:18px;margin-bottom:8px;font-weight:600}
+.grid6 a{color:#E8721C;font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.projetos .slider{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.projetos .item{border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(18,58,85,.10)}
+.projetos .ph{background:linear-gradient(140deg,#0d2c42,#1d8f7e);height:210px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.projetos .cap{background:#fff;padding:18px 20px}
+.projetos .cap h4{color:#123A55;font-size:16px;font-weight:600}
+.projetos .cap span{font-size:13px;color:#8a9aa5}
+.dots{text-align:center;margin-top:26px}
+.dots i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#d5dde2;margin:0 5px}
+.dots i.on{background:#E8721C}
+.parceiros{background:#F7F9FB;padding:60px 0}
+.parceiros .row{display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:30px;filter:grayscale(1);opacity:.55}
+.parceiros .lg{font-weight:700;font-size:21px;color:#123A55;letter-spacing:1px}
+.blog .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.blog .post{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(18,58,85,.08)}
+.blog .ph{height:170px;background:linear-gradient(140deg,#155a7a,#1d8f7e)}
+.blog .txt{padding:24px}
+.blog .data{font-size:12px;color:#E8721C;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.blog h3{color:#123A55;font-size:17px;margin:8px 0 10px;font-weight:600;line-height:1.4}
+.cta{background:linear-gradient(120deg,#0d2c42,#1d8f7e);color:#fff;text-align:center;padding:70px 0}
+.cta h2{font-size:31px;font-weight:700;margin-bottom:14px}
+.cta p{margin-bottom:28px;font-weight:300;font-size:17px}
+.contato{background:#fff}
+.form-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px}
+.form-wrap .info p{margin-bottom:14px}
+.form-wrap .info strong{color:#123A55}
+form{display:grid;gap:14px}
+input,select,textarea{width:100%;padding:14px 16px;border:1px solid #dfe6ea;border-radius:8px;font-family:inherit;font-size:14px;color:#4a4a4a;background:#fbfcfd}
+textarea{min-height:120px;resize:vertical}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.6;color:#7d8b95}
+.check input{width:auto;margin-top:4px}
+form button{background:linear-gradient(90deg,#F2A03D,#E8721C);color:#fff;border:0;padding:16px;border-radius:40px;font-family:inherit;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:1px;cursor:pointer}
+footer{background:#0d2c42;color:#9fb4c2;font-size:14px;padding:56px 0 0}
+footer .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding-bottom:40px}
+footer h4{color:#fff;font-size:16px;margin-bottom:16px;font-weight:600}
+footer ul{list-style:none}
+footer li{margin-bottom:8px}
+footer img{height:46px;margin-bottom:16px;filter:brightness(0) invert(1)}
+.social span{display:inline-flex;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.12);align-items:center;justify-content:center;margin-right:8px}
+.copy{border-top:1px solid rgba(255,255,255,.12);padding:20px 0;text-align:center;font-size:12.5px;color:#7b93a3}
+.wpp{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:20}
+.cookie{position:fixed;left:0;right:0;bottom:0;background:rgba(13,44,66,.97);color:#cfe0ea;padding:14px 20px;font-size:13px;display:flex;justify-content:center;gap:18px;align-items:center;z-index:19}
+.cookie button{background:#E8721C;color:#fff;border:0;padding:8px 18px;border-radius:20px;font-family:inherit;font-size:13px;cursor:pointer}
+@media(max-width:900px){.sobre,.form-wrap,.footer .cols{grid-template-columns:1fr}.grid6,.mvv,.projetos .slider,.blog .grid{grid-template-columns:1fr}nav{display:none}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="container">
+  <span>&#9742; (15) 3200-0000 &nbsp;|&nbsp; &#9993; contato@ravenasolar.com.br</span>
+  <span>Seg a Sex, 8h &agrave;s 18h &nbsp;|&nbsp; Sorocaba/SP</span>
+</div></div>
+
+<header><div class="container">
+  <img src="../logo.png" alt="Ravena Solar">
+  <nav><ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">A Empresa</a></li>
+    <li><a href="#">Servi&ccedil;os</a></li>
+    <li><a href="#">Projetos</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#">Contato</a></li>
+  </ul></nav>
+  <a href="#contato" class="btn">Fale Conosco</a>
+</div></header>
+
+<div class="hero">
+  <svg class="hero-deco" width="520" height="380" viewBox="0 0 520 380" xmlns="http://www.w3.org/2000/svg">
+    <path d="M40 340 L150 120 L470 120 L360 340 Z" fill="#ffffff"/>
+    <g stroke="#0d2c42" stroke-width="4">
+      <line x1="123" y1="175" x2="437" y2="175"/><line x1="96" y1="230" x2="410" y2="230"/><line x1="69" y1="285" x2="383" y2="285"/>
+      <line x1="204" y1="120" x2="150" y2="340"/><line x1="258" y1="120" x2="204" y2="340"/><line x1="312" y1="120" x2="258" y2="340"/><line x1="366" y1="120" x2="312" y2="340"/>
+    </g>
+  </svg>
+  <div class="container">
+    <h1>Energia solar para sua casa ou empresa.<br><span>A energia do futuro</span> chegou at&eacute; voc&ecirc;.</h1>
+    <p>Economize at&eacute; 95% na sua conta de luz com quem entende do assunto. Solu&ccedil;&otilde;es completas em energia fotovoltaica para resid&ecirc;ncias, com&eacute;rcios e ind&uacute;strias em Sorocaba e regi&atilde;o.</p>
+    <a href="#contato" class="btn">Solicite um or&ccedil;amento</a>
+    <a href="#sobre" class="btn btn-ghost">Saiba mais</a>
+  </div>
+</div>
+
+<div class="counters"><div class="container">
+  <div><div class="n">+300</div><div class="l">Clientes satisfeitos</div></div>
+  <div><div class="n">5</div><div class="l">Anos de mercado</div></div>
+  <div><div class="n">100%</div><div class="l">Satisfa&ccedil;&atilde;o</div></div>
+  <div><div class="n">24h</div><div class="l">Atendimento</div></div>
+  <div><div class="n">25</div><div class="l">Anos de garantia</div></div>
+</div></div>
+
+<section id="sobre"><div class="container">
+  <div class="section-title"><small>Quem somos</small><h2>Sobre a Ravena Solar</h2><div class="rule"></div></div>
+  <div class="sobre">
+    <div>
+      <p>Fundada em 2020, a Ravena Solar nasceu do sonho de dois s&oacute;cios apaixonados por tecnologia e sustentabilidade. Desde ent&atilde;o, viemos crescendo de forma s&oacute;lida e consistente no mercado de energia fotovoltaica, sempre com foco na satisfa&ccedil;&atilde;o total dos nossos clientes e no respeito ao meio ambiente.</p>
+      <p>Contamos com uma equipe altamente qualificada e capacitada, formada por engenheiros, t&eacute;cnicos e instaladores certificados, prontos para atender voc&ecirc; com excel&ecirc;ncia do primeiro contato at&eacute; o p&oacute;s-venda. Trabalhamos apenas com as melhores marcas do mercado mundial, garantindo qualidade e durabilidade em cada projeto.</p>
+      <p>Nossa miss&atilde;o &eacute; levar energia limpa, renov&aacute;vel e acess&iacute;vel para o maior n&uacute;mero poss&iacute;vel de pessoas, contribuindo para um planeta mais sustent&aacute;vel para as pr&oacute;ximas gera&ccedil;&otilde;es. Acreditamos que a energia solar &eacute; o futuro, e o futuro come&ccedil;a agora.</p>
+    </div>
+    <div class="img">Foto da equipe</div>
+  </div>
+  <div class="mvv">
+    <div class="card"><div class="ico">&#127919;</div><h3>Miss&atilde;o</h3><p>Levar energia limpa e renov&aacute;vel para nossos clientes, com qualidade e excel&ecirc;ncia no atendimento.</p></div>
+    <div class="card"><div class="ico">&#128065;</div><h3>Vis&atilde;o</h3><p>Ser refer&ecirc;ncia em energia solar na regi&atilde;o de Sorocaba at&eacute; 2025, reconhecida pela qualidade.</p></div>
+    <div class="card"><div class="ico">&#128142;</div><h3>Valores</h3><p>&Eacute;tica, transpar&ecirc;ncia, compromisso, inova&ccedil;&atilde;o, sustentabilidade e respeito ao cliente.</p></div>
+  </div>
+</div></section>
+
+<section class="servicos"><div class="container">
+  <div class="section-title"><small>O que fazemos</small><h2>Nossos Servi&ccedil;os</h2><div class="rule"></div></div>
+  <div class="grid6">
+    <div class="card"><div class="ico">&#127968;</div><h3>Energia Solar Residencial</h3><p>Sistemas fotovoltaicos dimensionados para o consumo da sua casa, com projeto personalizado.</p><a href="#">Saiba mais &rarr;</a></div>
+    <div class="card"><div class="ico">&#127970;</div><h3>Energia Solar Comercial</h3><p>Reduza os custos fixos do seu com&eacute;rcio e aumente a competitividade do seu neg&oacute;cio.</p><a href="#">Saiba mais &rarr;</a></div>
+    <div class="card"><div class="ico">&#127981;</div><h3>Energia Solar Industrial</h3><p>Projetos de grande porte com an&aacute;lise de demanda contratada e retorno acelerado.</p><a href="#">Saiba mais &rarr;</a></div>
+    <div class="card"><div class="ico">&#127806;</div><h3>Energia Solar Rural</h3><p>Solu&ccedil;&otilde;es para propriedades rurais, com linhas de cr&eacute;dito espec&iacute;ficas do setor.</p><a href="#">Saiba mais &rarr;</a></div>
+    <div class="card"><div class="ico">&#128295;</div><h3>Manuten&ccedil;&atilde;o</h3><p>Limpeza, revis&atilde;o e monitoramento de sistemas fotovoltaicos de qualquer fabricante.</p><a href="#">Saiba mais &rarr;</a></div>
+    <div class="card"><div class="ico">&#128202;</div><h3>Consultoria Energ&eacute;tica</h3><p>An&aacute;lise da sua conta de luz e estudo de viabilidade sem compromisso.</p><a href="#">Saiba mais &rarr;</a></div>
+  </div>
+</div></section>
+
+<section class="projetos"><div class="container">
+  <div class="section-title"><small>Portf&oacute;lio</small><h2>Projetos Realizados</h2><div class="rule"></div></div>
+  <div class="slider">
+    <div class="item"><div class="ph">Foto da obra</div><div class="cap"><h4>Resid&ecirc;ncia em Votorantim</h4><span>5,2 kWp &middot; 2021</span></div></div>
+    <div class="item"><div class="ph">Foto da obra</div><div class="cap"><h4>Mercado em Sorocaba</h4><span>18 kWp &middot; 2021</span></div></div>
+    <div class="item"><div class="ph">Foto da obra</div><div class="cap"><h4>Ch&aacute;cara em Itu</h4><span>8,8 kWp &middot; 2020</span></div></div>
+  </div>
+  <div class="dots"><i class="on"></i><i></i><i></i><i></i></div>
+</div></section>
+
+<div class="parceiros"><div class="container">
+  <div class="section-title"><small>Confian&ccedil;a</small><h2>Nossos Parceiros</h2><div class="rule"></div></div>
+  <div class="row"><span class="lg">SOLARTECH</span><span class="lg">INVERSUL</span><span class="lg">BANCO CRED+</span><span class="lg">FOTOVOLT</span><span class="lg">ABGD</span></div>
+</div></div>
+
+<section class="blog"><div class="container">
+  <div class="section-title"><small>Novidades</small><h2>&Uacute;ltimas do Blog</h2><div class="rule"></div></div>
+  <div class="grid">
+    <div class="post"><div class="ph"></div><div class="txt"><div class="data">12 de novembro de 2021</div><h3>5 motivos para investir em energia solar ainda este ano</h3><p>Descubra por que cada vez mais brasileiros est&atilde;o aderindo &agrave; energia solar...</p></div></div>
+    <div class="post"><div class="ph"></div><div class="txt"><div class="data">28 de setembro de 2021</div><h3>Como funciona a compensa&ccedil;&atilde;o de energia el&eacute;trica?</h3><p>Entenda o sistema de cr&eacute;ditos e como sua conta de luz &eacute; calculada...</p></div></div>
+    <div class="post"><div class="ph"></div><div class="txt"><div class="data">03 de agosto de 2021</div><h3>Energia solar valoriza seu im&oacute;vel; entenda</h3><p>Estudos apontam que im&oacute;veis com sistema fotovoltaico t&ecirc;m valoriza&ccedil;&atilde;o...</p></div></div>
+  </div>
+</div></section>
+
+<div class="cta"><div class="container">
+  <h2>Pronto para come&ccedil;ar a economizar?</h2>
+  <p>Entre em contato conosco e receba um atendimento personalizado.</p>
+  <a href="#contato" class="btn">Fale com um especialista</a>
+</div></div>
+
+<section class="contato" id="contato"><div class="container">
+  <div class="section-title"><small>Contato</small><h2>Fale Conosco</h2><div class="rule"></div></div>
+  <div class="form-wrap">
+    <div class="info">
+      <h4 style="color:#123A55;font-size:20px;margin-bottom:16px">Ravena Solar Energia Ltda.</h4>
+      <p><strong>Endere&ccedil;o:</strong> Av. das Na&ccedil;&otilde;es, 1420, sala 8 &mdash; Sorocaba/SP</p>
+      <p><strong>Telefone:</strong> (15) 3200-0000</p>
+      <p><strong>WhatsApp:</strong> (15) 99000-0000</p>
+      <p><strong>E-mail:</strong> contato@ravenasolar.com.br</p>
+      <p><strong>Hor&aacute;rio:</strong> Segunda a sexta, das 8h &agrave;s 18h</p>
+      <div class="img" style="background:#e9eef1;border-radius:12px;min-height:210px;display:flex;align-items:center;justify-content:center;color:#9fb0bb;margin-top:22px;font-size:13px">Mapa do Google</div>
+    </div>
+    <form onsubmit="return false">
+      <input type="text" placeholder="Nome completo *">
+      <input type="email" placeholder="Seu melhor e-mail *">
+      <input type="text" placeholder="Telefone / WhatsApp *">
+      <input type="text" placeholder="Cidade">
+      <select><option>Assunto</option><option>Or&ccedil;amento residencial</option><option>Or&ccedil;amento comercial</option><option>Manuten&ccedil;&atilde;o</option><option>Trabalhe conosco</option><option>Outros</option></select>
+      <textarea placeholder="Sua mensagem"></textarea>
+      <label class="check"><input type="checkbox"> Li e aceito a pol&iacute;tica de privacidade e autorizo o contato da Ravena Solar por e-mail, telefone e WhatsApp.</label>
+      <button>Enviar mensagem</button>
+    </form>
+  </div>
+</div></section>
+
+<footer><div class="container">
+  <div class="cols">
+    <div>
+      <img src="../logo.png" alt="Ravena Solar">
+      <p>Solu&ccedil;&otilde;es completas em energia solar fotovoltaica para resid&ecirc;ncias, com&eacute;rcios e ind&uacute;strias em Sorocaba e regi&atilde;o.</p>
+      <div class="social" style="margin-top:16px"><span>f</span><span>in</span><span>ig</span><span>yt</span></div>
+    </div>
+    <div>
+      <h4>Links r&aacute;pidos</h4>
+      <ul><li><a href="#">Home</a></li><li><a href="#">A Empresa</a></li><li><a href="#">Servi&ccedil;os</a></li><li><a href="#">Projetos</a></li><li><a href="#">Blog</a></li><li><a href="#">Trabalhe conosco</a></li><li><a href="#">Pol&iacute;tica de privacidade</a></li></ul>
+    </div>
+    <div>
+      <h4>Contato</h4>
+      <ul><li>Av. das Na&ccedil;&otilde;es, 1420, sala 8</li><li>Sorocaba/SP &mdash; CEP 18000-000</li><li>(15) 3200-0000</li><li>contato@ravenasolar.com.br</li><li>CNPJ 00.000.000/0001-00</li></ul>
+    </div>
+  </div>
+  <div class="copy">&copy; 2021 Ravena Solar Energia Ltda. Todos os direitos reservados. &nbsp;|&nbsp; Desenvolvido por Ag&ecirc;ncia Web Sorocaba</div>
+</div></footer>
+
+<a class="wpp" href="#">&#128172;</a>
+<div class="cookie"><span>Este site utiliza cookies para melhorar sua experi&ecirc;ncia de navega&ccedil;&atilde;o.</span><button>Aceitar</button></div>
+
+</body>
+</html>
