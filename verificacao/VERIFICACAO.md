@@ -94,8 +94,11 @@ O script extrai todos os números do texto visível e exige que cada um tenha um
 
 Alvo: Vercel, ligada ao repositório `iajuss/energia_trilha` (D2), com publicação automática a cada push no `main`.
 
-- **Vercel: pendente.** A criação do projeto pelo conector foi recusada (403, sem acesso ao escopo `iajuss-projects`). Falta importar o repositório na Vercel com a conta dona do escopo.
-- **No ar enquanto isso:** https://iajuss.github.io/energia_trilha/ (GitHub Pages, também atualizado a cada push). Conferido em 07/10/2026: a página publicada já é a versão com "Enviar pelo WhatsApp".
+- **No ar:** https://energia-trilha.vercel.app/ (projeto `energia-trilha`, time `iajuss-projects`, branch de produção `main`).
+- **Conferido em 07/10/2026:** a página e `material/logo.svg` respondem 200 sem login, e o HTML publicado é a versão do WhatsApp.
+- **Mesmos testes contra a página publicada:** `BASE_URL=https://energia-trilha.vercel.app/ npm run verificar` deu **19/19**. Resultado guardado em `resultado-vercel.json`.
+- Para publicar foi preciso, além do conector da Vercel com acesso ao time, instalar o app da Vercel no GitHub com acesso ao repositório.
+- O GitHub Pages (https://iajuss.github.io/energia_trilha/) continua ligado e também se atualiza a cada push. A URL oficial é a da Vercel.
 
 ## Também conferido
 

@@ -14,7 +14,7 @@ Landing page de uma ação só: pedir simulação de energia solar residencial. 
 - `index.html`: a página inteira (HTML, CSS e JS inline, sem build e sem dependência em produção).
 - `material/`: logo (`logo.svg` e `logo.png`) e o site antigo, só como referência. A página usa `material/logo.svg` direto.
 - `verificacao/`: o script de verificação, as capturas e os resultados (`VERIFICACAO.md` resume).
-- Publicação: Vercel, ligada ao repositório. Cada push no `main` publica sozinho (`DECISOES.md`, D2). Não há build.
+- Publicação: Vercel, em https://energia-trilha.vercel.app/, ligada ao repositório. Cada push no `main` publica sozinho (`DECISOES.md`, D2). Não há build.
 
 ## Regras que não se quebram
 
@@ -41,6 +41,8 @@ npm run verificar
 ```
 
 Usa `playwright-core` com o Microsoft Edge instalado na máquina (sem baixar navegador). O script intercepta o `wa.me`, então nenhuma conversa real é aberta. Ele confere se o número está configurado e testa o filtro de R$ 450, o conteúdo da mensagem, o aviso de outra cidade, a largura de 375 px, as palavras proibidas e confere cada número da página com o brief. As capturas são regravadas em `verificacao/`.
+
+Para testar a página publicada: `BASE_URL=https://energia-trilha.vercel.app/ npm run verificar`.
 
 Depois de qualquer mudança na página, rode a verificação e atualize `verificacao/VERIFICACAO.md` se algo mudou.
 

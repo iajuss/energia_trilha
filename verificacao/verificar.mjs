@@ -18,7 +18,8 @@ const servidor = createServer(async (req, res) => {
     res.end(await readFile(arquivo));
   } catch { res.writeHead(404); res.end(); }
 }).listen(0);
-const base = `http://127.0.0.1:${servidor.address().port}/`;
+// BASE_URL=https://energia-trilha.vercel.app/ roda os mesmos testes contra a página publicada.
+const base = process.env.BASE_URL || `http://127.0.0.1:${servidor.address().port}/`;
 
 const resultados = [];
 function registrar(nome, passou, detalhe) {

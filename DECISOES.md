@@ -50,6 +50,8 @@ A SPEC escolheu o Formspree para que o pedido "exista no clique e fique numa lis
 
 ### Motivo
 
+**URL:** https://energia-trilha.vercel.app/ (projeto `energia-trilha`, time `iajuss-projects`).
+
 O responsável pediu que, com o WhatsApp funcionando, a página subisse na Vercel automaticamente. O projeto da Vercel fica ligado ao repositório `iajuss/energia_trilha`: cada push no `main` publica sozinho, sem passo manual. A página é um HTML estático, então não há build nem configuração.
 
 ---
