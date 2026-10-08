@@ -14,14 +14,36 @@ A página fala com o dono da casa, entre 35 e 60 anos, que paga mais de R$ 450 d
 
 ## O formulário
 
-- Campos: nome, WhatsApp, cidade e valor médio da conta.
-- Cidade: escolha entre as quatro cidades ou "Outra cidade da região". Na última, aparece o aviso de que a Ravena atende até 80 km de Sorocaba e confirma a distância na resposta. O pedido é enviado mesmo assim.
-- Conta abaixo de R$ 450: a página mostra uma explicação curta e honesta e não envia. Conta de R$ 450 ou mais: envia.
-- Anexo da conta: fica fora do formulário. Upload pede backend e cria atrito. A confirmação de envio diz que mandar a foto da conta no WhatsApp agiliza a simulação.
-- Envio: POST para um serviço de formulário externo (Formspree ou equivalente), que guarda o pedido e avisa por e-mail. Por quê: a meta do cliente é contável (de 12 para 25 por mês), então o pedido precisa existir no clique e ficar numa lista. Abrir o WhatsApp com a mensagem pronta perderia, sem rastro, quem desiste antes de apertar enviar. O vendedor responde pelo WhatsApp informado no campo, que por isso continua obrigatório.
-- O plano gratuito do serviço precisa comportar pelo menos 25 envios por mês, com folga. Isso é conferido antes de escolher o serviço.
-- O endpoint fica no HTML. É público por natureza e não é segredo.
-- A página não mostra telefone nem WhatsApp da Ravena. O brief não traz o número, e um número fictício na tela seria um contato falso. Além disso, o formulário é a única ação da página.
+### Decisão revista em 07/10/2026: o pedido vai pelo WhatsApp
+
+**O que a spec dizia antes.** O envio era por POST para um serviço de formulário (Formspree), que guardava o pedido numa lista e avisava por e-mail. Dois motivos sustentavam isso:
+
+1. Abrir o WhatsApp com a mensagem pronta "perderia, sem rastro, quem desiste antes de apertar enviar", e a meta do cliente (de 12 para 25 pedidos por mês) é contável.
+2. A página não mostraria número da Ravena, porque o brief não traz o número e "um número fictício na tela seria um contato falso".
+
+**O que mudou.** O pedido agora abre o WhatsApp da Ravena com a mensagem pronta. O motivo é facilidade e praticidade. O Formspree pedia conta, configuração e mais um painel para o vendedor olhar. O WhatsApp é onde o atendimento já acontece: o brief diz que "quem pede simulação recebe resposta no mesmo dia útil, por WhatsApp". O pedido passa a cair direto na conversa em que vai ser respondido.
+
+**Motivo 1 (rastro): continua verdadeiro. É um custo aceito, não um argumento vencido.**
+- Quem abre o WhatsApp e desiste antes de apertar enviar se perde sem rastro, e a contagem mensal deixa de ser automática. Aceito isso em troca de não ter serviço, conta nem painel no meio.
+- O que diminui a perda: toda mensagem começa com a etiqueta fixa "Simulação pelo site". O vendedor busca essa frase (ou cria uma etiqueta no WhatsApp Business) e conta os pedidos do mês. A contagem também separa os pedidos da página dos que chegam por indicação e Instagram, coisa que a lista do Formspree não fazia.
+- O que se ganha no lugar: a foto da conta, que antes ficava para depois, agora pode ir na mesma conversa, no mesmo passo. E o campo WhatsApp sai do formulário, porque a mensagem já chega com o número de quem mandou.
+
+**Motivo 2 (contato falso): a objeção era ao número na tela, e a página não mostra número na tela. Mas o link também é um contato, então o número fictício foi escolhido para não ser de ninguém.**
+- A Ravena é fictícia (o brief diz "a empresa não existe"), então não há número real para pôr. O número fictício existe para representar o fluxo de ponta a ponta.
+- O número é **(15) 0000-0000** (`551500000000`). Nenhum telefone no Brasil começa com 0, então esse número não pertence a ninguém. Um número com cara de real, como (15) 99999-9999, poderia ser de uma pessoa de verdade, que passaria a receber nome, cidade e conta de luz de desconhecidos. Esse seria o contato falso de fato, e com dado pessoal no meio.
+- O número continua sem aparecer como texto na página. Ele fica só dentro do link, numa única constante do script (`WHATSAPP_RAVENA`).
+- O que isso custa: enquanto o número for o fictício, quem completar o formulário vê o WhatsApp abrir com a mensagem pronta e em seguida avisar que o número é inválido. A página demonstra o fluxo, mas não entrega pedido. Para virar página de produção, basta trocar a constante pelo número real da Ravena. Nada mais muda.
+
+O registro completo, com datas, está em `DECISOES.md` (D1 e D3).
+
+### Como o formulário funciona agora
+
+- Campos: nome, cidade e valor médio da conta. O WhatsApp da pessoa não é pedido: a mensagem sai do próprio WhatsApp dela, e o vendedor recebe o número junto.
+- Cidade: escolha entre as quatro cidades ou "Outra cidade da região". Na última, aparece o aviso de que a Ravena atende até 80 km de Sorocaba e confirma a distância na resposta. O pedido segue mesmo assim.
+- Conta abaixo de R$ 450: a página mostra uma explicação curta e honesta e não abre o WhatsApp. Conta de R$ 450 ou mais: abre.
+- Envio: o botão abre o WhatsApp da Ravena (`wa.me`) com a mensagem pronta (nome, cidade, conta), começando pela etiqueta fixa "Simulação pelo site". O vendedor busca essa etiqueta para contar os pedidos do mês e separá-los dos que vêm por indicação e Instagram.
+- Anexo da conta: fica fora do formulário. A confirmação pede para mandar a foto ou o PDF da conta na mesma conversa do WhatsApp.
+- O número da Ravena fica numa constante do script e aparece só dentro do link, nunca como texto na tela. Hoje é o fictício (15) 0000-0000. O formulário continua sendo a única ação da página.
 
 ## O que entra, e por quê
 
@@ -53,8 +75,9 @@ A ordem da página segue a ordem dos medos que o brief relata.
 
 ## Como verifico
 
-- Conta de R$ 300: nenhum POST sai e aparece a explicação. Conta de R$ 450: o POST sai com os quatro campos.
-- Um envio de teste chega ao serviço e ao e-mail.
+- Conta de R$ 300: o WhatsApp não abre e aparece a explicação. Conta de R$ 450: o WhatsApp abre com o número da constante e com etiqueta, nome, cidade e conta na mensagem. (Isso substitui os testes de POST e de e-mail, que deixaram de existir com o Formspree.)
+- O número no link é o da constante e não aparece como texto na página.
+- Na página publicada, num celular: o formulário abre o WhatsApp com a mensagem pronta. Com o número fictício, o esperado é o WhatsApp avisar que o número é inválido. Quando entrar o número real, o teste passa a ser o pedido chegar ao WhatsApp da Ravena.
 - Uma busca no HTML pelas palavras proibidas não encontra nada.
 - Cada número da página confere com o brief.
 - A página funciona e pode ser lida num celular com tela de 375 px de largura.

@@ -1,54 +1,73 @@
 {
-  "data": "2026-10-08T02:01:40.711Z",
+  "data": "2026-10-08T02:15:01.428Z",
   "resultados": [
     {
-      "teste": "Conta R$ 300 não envia e mostra a explicação",
+      "teste": "Número do WhatsApp em formato válido de link (FICTÍCIO, ver D3)",
       "passou": true,
-      "detalhe": "POSTs: 0; explicação visível: true"
+      "detalhe": "WHATSAPP_RAVENA = '551500000000'"
     },
     {
-      "teste": "Conta R$ 450 envia POST com os quatro campos",
+      "teste": "Número da Ravena não aparece como texto na página",
       "passou": true,
-      "detalhe": "POSTs: 1; corpo: {\"nome\":\"Teste Verificação\",\"whatsapp\":\"(15) 99999-0000\",\"cidade\":\"Sorocaba\",\"conta\":\"450,00\",\"_subject\":\"Pedido de simulação — Sorocaba — R$ 450\"}; confirmação visível: true"
+      "detalhe": "procurado: 1500000000"
     },
     {
-      "teste": "Confirmação pede a foto da conta pelo WhatsApp",
+      "teste": "Conta R$ 300 não abre o WhatsApp e mostra a explicação",
+      "passou": true,
+      "detalhe": "aberturas do WhatsApp: 0; explicação visível: true"
+    },
+    {
+      "teste": "Conta R$ 450 abre o WhatsApp com nome, cidade e conta",
+      "passou": true,
+      "detalhe": "aberturas: 1; mensagem: \"Simulação pelo site\\nOlá, Ravena Solar! Quero uma simulação de energia solar.\\nNome: Teste Verificação\\nCidade: Sorocaba\\nConta de luz média: R$ 450,00\""
+    },
+    {
+      "teste": "Mensagem vai para o número da Ravena",
+      "passou": true,
+      "detalhe": "número no link: 551500000000"
+    },
+    {
+      "teste": "Botão \"Abrir o WhatsApp de novo\" aponta para o mesmo link",
       "passou": true
     },
     {
-      "teste": "Conta \"449,99\" não envia",
-      "passou": true,
-      "detalhe": "POSTs: 0"
+      "teste": "Confirmação manda apertar enviar e pede a foto da conta",
+      "passou": true
     },
     {
-      "teste": "Conta \"R$ 449\" não envia",
+      "teste": "Conta \"449,99\" não abre",
       "passou": true,
-      "detalhe": "POSTs: 0"
+      "detalhe": "aberturas: 0"
     },
     {
-      "teste": "Conta \"450,00\" envia",
+      "teste": "Conta \"R$ 449\" não abre",
       "passou": true,
-      "detalhe": "POSTs: 1; conta enviada: 450,00"
+      "detalhe": "aberturas: 0"
     },
     {
-      "teste": "Conta \"R$ 1.200,00\" envia",
+      "teste": "Conta \"450,00\" abre o WhatsApp",
       "passou": true,
-      "detalhe": "POSTs: 1; conta enviada: 1200,00"
+      "detalhe": "aberturas: 1; conta na mensagem: R$ 450,00"
     },
     {
-      "teste": "Conta \"1.200\" envia",
+      "teste": "Conta \"R$ 1.200,00\" abre o WhatsApp",
       "passou": true,
-      "detalhe": "POSTs: 1; conta enviada: 1200,00"
+      "detalhe": "aberturas: 1; conta na mensagem: R$ 1.200,00"
     },
     {
-      "teste": "Outra cidade mostra aviso de 80 km e envia",
+      "teste": "Conta \"1.200\" abre o WhatsApp",
       "passou": true,
-      "detalhe": "aviso visível: true; POSTs: 1"
+      "detalhe": "aberturas: 1; conta na mensagem: R$ 1.200,00"
     },
     {
-      "teste": "Formulário vazio não envia e marca os 4 campos",
+      "teste": "Outra cidade mostra aviso de 80 km e abre o WhatsApp",
       "passou": true,
-      "detalhe": "campos marcados: 4"
+      "detalhe": "aviso visível: true; aberturas: 1"
+    },
+    {
+      "teste": "Formulário vazio não abre o WhatsApp e marca os 3 campos",
+      "passou": true,
+      "detalhe": "campos marcados: 3"
     },
     {
       "teste": "Sem rolagem horizontal a 375 px",

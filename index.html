@@ -95,7 +95,6 @@ input:focus,select:focus{border-color:var(--azul)}
 form .btn{width:100%}
 .ok h3{font-size:1.375rem;margin-bottom:.75rem}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.honey{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 footer{padding:2rem 0;font-size:.9375rem}
 footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
@@ -191,7 +190,7 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
   <div class="wrap">
     <h2>O que acontece depois do pedido</h2>
     <ol class="etapas">
-      <li><div><h3>Resposta no mesmo dia útil</h3><p>Pelo WhatsApp que você informar.</p></div></li>
+      <li><div><h3>Resposta no mesmo dia útil</h3><p>Pelo WhatsApp, na mesma conversa do pedido.</p></div></li>
       <li><div><h3>Visita técnica ao telhado</h3><p>Sem custo e sem compromisso.</p></div></li>
       <li><div><h3>Proposta com três tamanhos de sistema</h3><p>Você escolhe com os números na mão.</p></div></li>
     </ol>
@@ -202,21 +201,14 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
 <section id="simulacao">
   <div class="wrap">
     <h2>Pedir simulação</h2>
-    <p>Nome, WhatsApp, cidade e o valor da conta. A resposta vem pelo seu WhatsApp no mesmo dia útil.</p>
+    <p>Nome, cidade e o valor da conta. O botão abre o WhatsApp com a mensagem pronta, e a resposta vem na mesma conversa, no mesmo dia útil.</p>
 
     <div class="caixa">
-      <form id="form-simulacao" novalidate data-endpoint="https://formspree.io/f/SEU_ID_AQUI">
+      <form id="form-simulacao" novalidate>
         <div class="campo">
           <label for="nome">Nome</label>
           <input id="nome" name="nome" type="text" autocomplete="name" required aria-describedby="erro-nome">
           <p class="msg-erro" id="erro-nome" aria-live="polite"></p>
-        </div>
-
-        <div class="campo">
-          <label for="whatsapp">WhatsApp com DDD</label>
-          <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="dica-whatsapp erro-whatsapp">
-          <p class="dica" id="dica-whatsapp">É por aqui que respondemos.</p>
-          <p class="msg-erro" id="erro-whatsapp" aria-live="polite"></p>
         </div>
 
         <div class="campo">
@@ -245,22 +237,17 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
         <div class="aviso" id="aviso-conta" role="status" hidden>
           <h3>Com essa conta, o sistema não se paga</h3>
           <p>A conta de luz nunca zera: sempre resta a taxa mínima da distribuidora e o custo do fio. Abaixo de R$ 450 por mês, o que o sistema consegue cortar é pouco para pagar um investimento de R$&nbsp;14&nbsp;mil a R$&nbsp;19&nbsp;mil — e nós mesmos desaconselhamos.</p>
-          <p>Por isso não vamos enviar o pedido. Se o valor digitado estiver errado, é só corrigir acima.</p>
+          <p>Por isso não vamos abrir o pedido. Se o valor digitado estiver errado, é só corrigir acima.</p>
         </div>
 
-        <div class="honey" aria-hidden="true">
-          <label for="_gotcha">Não preencha</label>
-          <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
-        </div>
-
-        <p class="msg-erro" id="erro-envio" role="alert"></p>
-        <button class="btn" type="submit" id="enviar">Pedir simulação</button>
+        <button class="btn" type="submit" id="enviar">Enviar pelo WhatsApp</button>
       </form>
 
       <div class="ok" id="ok" role="status" tabindex="-1" hidden>
-        <h3>Pedido recebido.</h3>
-        <p>Respondemos pelo WhatsApp que você informou, no mesmo dia útil.</p>
-        <p><strong>Para agilizar:</strong> quando receber a nossa mensagem, mande por lá uma foto ou o PDF da sua conta de luz.</p>
+        <h3>Falta só apertar enviar no WhatsApp.</h3>
+        <p>Abrimos a conversa com a mensagem pronta. Respondemos por lá no mesmo dia útil.</p>
+        <p><strong>Para agilizar:</strong> mande na mesma conversa uma foto ou o PDF da sua conta de luz.</p>
+        <p><a class="btn" id="abrir-zap" href="#" target="_blank" rel="noopener">Abrir o WhatsApp de novo</a></p>
       </div>
     </div>
   </div>
@@ -278,13 +265,15 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
 <script>
 (function(){
   var CONTA_MINIMA = 450;
+  // WhatsApp da Ravena: DDI + DDD + número, só dígitos. Ver DECISOES.md (D1 e D3).
+  // FICTÍCIO: (15) 0000-0000 não existe (nenhum número no Brasil começa com 0). Trocar pelo real.
+  var WHATSAPP_RAVENA = '551500000000';
+  var ETIQUETA = 'Simulação pelo site'; // primeira linha fixa: o vendedor busca por ela para contar os pedidos
+
   var form = document.getElementById('form-simulacao');
-  var endpoint = form.getAttribute('data-endpoint');
   var cidade = document.getElementById('cidade');
   var avisoCidade = document.getElementById('aviso-cidade');
   var avisoConta = document.getElementById('aviso-conta');
-  var erroEnvio = document.getElementById('erro-envio');
-  var botao = document.getElementById('enviar');
 
   cidade.addEventListener('change', function(){
     avisoCidade.hidden = cidade.value !== 'Outra cidade da região';
@@ -302,6 +291,10 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
     return parseFloat(t);
   }
 
+  function reais(v){
+    return 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+,)/g, '.');
+  }
+
   function marcar(id, msg){
     var el = document.getElementById(id);
     document.getElementById('erro-' + id).textContent = msg || '';
@@ -312,21 +305,18 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
 
   function validar(){
     var nome = form.nome.value.trim();
-    var zap = form.whatsapp.value.replace(/\D/g, '');
     var conta = lerReais(form.conta.value);
     var ok = true;
     ok = marcar('nome', nome ? '' : 'Informe seu nome.') && ok;
-    ok = marcar('whatsapp', (zap.length >= 10 && zap.length <= 13) ? '' : 'Informe o WhatsApp com DDD.') && ok;
     ok = marcar('cidade', cidade.value ? '' : 'Escolha a cidade.') && ok;
     ok = marcar('conta', isNaN(conta) ? 'Informe o valor médio da conta.' : '') && ok;
-    return ok ? { nome: nome, whatsapp: form.whatsapp.value.trim(), cidade: cidade.value, conta: conta } : null;
+    return ok ? { nome: nome, cidade: cidade.value, conta: conta } : null;
   }
 
   form.conta.addEventListener('input', function(){ avisoConta.hidden = true; });
 
   form.addEventListener('submit', function(ev){
     ev.preventDefault();
-    erroEnvio.textContent = '';
     var dados = validar();
     if (!dados) {
       var primeiro = form.querySelector('[aria-invalid="true"]');
@@ -336,34 +326,25 @@ footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
     if (dados.conta < CONTA_MINIMA) {
       avisoConta.hidden = false;
       avisoConta.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      return; // não envia
+      return; // não abre o WhatsApp
     }
     avisoConta.hidden = true;
-    if (form._gotcha.value) return;
 
-    botao.disabled = true;
-    botao.textContent = 'Enviando…';
-    fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        nome: dados.nome,
-        whatsapp: dados.whatsapp,
-        cidade: dados.cidade,
-        conta: dados.conta.toFixed(2).replace('.', ','),
-        _subject: 'Pedido de simulação — ' + dados.cidade + ' — R$ ' + dados.conta.toFixed(0)
-      })
-    }).then(function(r){
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      form.hidden = true;
-      var ok = document.getElementById('ok');
-      ok.hidden = false;
-      ok.focus();
-    }).catch(function(){
-      erroEnvio.textContent = 'Não conseguimos enviar agora. Seus dados continuam aqui: tente de novo em alguns minutos.';
-      botao.disabled = false;
-      botao.textContent = 'Pedir simulação';
-    });
+    var mensagem = [
+      ETIQUETA,
+      'Olá, Ravena Solar! Quero uma simulação de energia solar.',
+      'Nome: ' + dados.nome,
+      'Cidade: ' + dados.cidade,
+      'Conta de luz média: ' + reais(dados.conta)
+    ].join('\n');
+    var url = 'https://wa.me/' + WHATSAPP_RAVENA + '?text=' + encodeURIComponent(mensagem);
+
+    document.getElementById('abrir-zap').href = url;
+    form.hidden = true;
+    var ok = document.getElementById('ok');
+    ok.hidden = false;
+    ok.focus();
+    window.open(url, '_blank');
   });
 })();
 </script>

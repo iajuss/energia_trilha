@@ -1,49 +1,61 @@
 # Verificação — Página de simulação da Ravena Solar (P1)
 
-Cada item de "Como verifico" da `SPEC.md`, com o teste que o cobre e a evidência.
+Cada item de "Como verifico" da `SPEC.md`, com o teste que o cobre e a evidência. O envio é pelo WhatsApp (decisões D1 e D3 em `DECISOES.md`). Por isso os testes de POST e de e-mail da versão Formspree deram lugar aos testes do link do WhatsApp.
 
-Os testes automáticos estão em `verificar.mjs` (Playwright com o Microsoft Edge, viewport de 375 × 812). O script sobe um servidor local, abre `index.html` e intercepta as chamadas para `formspree.io`. Assim conta exatamente quantos POSTs saíram e com que corpo, sem enviar nada de verdade. O resultado bruto fica em `resultado.json`.
+Os testes automáticos estão em `verificar.mjs` (Playwright com o Microsoft Edge, viewport de 375 × 812). O script sobe um servidor local, abre `index.html` e intercepta toda abertura de `wa.me`. Assim registra quantas vezes o WhatsApp abriria, para qual número e com qual mensagem, sem abrir conversa de verdade. O resultado bruto fica em `resultado.json`.
 
 ```bash
 npm install
 npm run verificar
 ```
 
-**Última execução: 15/15 testes passaram.**
+**Última execução: 19/19 testes passaram.**
 
-## 1. Conta de R$ 300 não envia; conta de R$ 450 envia os quatro campos
+## 1. Conta de R$ 300 não abre o WhatsApp; conta de R$ 450 abre com a mensagem certa
 
 | Teste | Resultado |
 |---|---|
-| Conta `300` | 0 POSTs, explicação visível |
-| Conta `449,99` e `R$ 449` | 0 POSTs |
-| Conta `450` | 1 POST com `{"nome":"Teste Verificação","whatsapp":"(15) 99999-0000","cidade":"Sorocaba","conta":"450,00","_subject":"…"}` |
-| Conta `450,00`, `R$ 1.200,00` e `1.200` | 1 POST cada (`1.200` é lido como mil e duzentos) |
-| Formulário vazio | 0 POSTs e os 4 campos marcados com erro |
-| "Outra cidade da região" | Aviso de 80 km aparece e o POST sai mesmo assim |
-| Confirmação | Fala de WhatsApp e pede a foto da conta |
+| Conta `300` | 0 aberturas do WhatsApp, explicação visível |
+| Conta `449,99` e `R$ 449` | 0 aberturas |
+| Conta `450` | 1 abertura de `wa.me/551500000000` com a mensagem abaixo |
+| Conta `450,00`, `R$ 1.200,00` e `1.200` | 1 abertura cada. A conta vai na mensagem como `R$ 450,00` e `R$ 1.200,00` |
+| Formulário vazio | 0 aberturas e os 3 campos marcados com erro |
+| "Outra cidade da região" | Aviso de 80 km aparece e o WhatsApp abre com "Cidade: Outra cidade da região" |
+| Confirmação | Diz que falta apertar enviar e pede a foto da conta na mesma conversa |
+| "Abrir o WhatsApp de novo" | Aponta para o mesmo link (cobre navegador que bloqueia nova aba) |
+
+Mensagem gerada no teste da conta de R$ 450:
+
+```
+Simulação pelo site
+Olá, Ravena Solar! Quero uma simulação de energia solar.
+Nome: Teste Verificação
+Cidade: Sorocaba
+Conta de luz média: R$ 450,00
+```
+
+A primeira linha é a etiqueta fixa que o vendedor usa para contar os pedidos do mês (D1).
 
 Capturas:
 - `01-conta-300-bloqueada-375px.png`: explicação no lugar do envio.
-- `02-conta-450-enviada-375px.png`: confirmação de pedido recebido.
+- `02-conta-450-whatsapp-375px.png`: confirmação depois de abrir o WhatsApp.
 - `03-outra-cidade-aviso-375px.png`: aviso de 80 km.
 
-## 2. Envio de teste chega ao serviço e ao e-mail
+## 2. O número da Ravena: link correto, nunca na tela
 
-**Pendente.** Precisa do ID do formulário no Formspree (`data-endpoint` em `index.html`, hoje `SEU_ID_AQUI`). Criar a conta no Formspree é com a dona ou o dono da conta. Depois de trocar o ID:
+| Teste | Resultado |
+|---|---|
+| `WHATSAPP_RAVENA` tem formato de link (55 + DDD + número) | `551500000000`, **fictício** (D3) |
+| O link aberto usa esse número | Sim |
+| O número aparece como texto na página | Não |
 
-1. Abrir a página publicada e enviar um pedido com conta ≥ R$ 450.
-2. Conferir o pedido no painel do Formspree (Submissions).
-3. Conferir o e-mail de aviso na caixa cadastrada.
-4. Registrar aqui a data e o horário do envio e anexar as capturas do painel e do e-mail.
-
-Plano Free do Formspree: 50 envios por mês (formspree.io/plans, conferido em 07/10/2026), o dobro da meta de 25.
+**Número fictício.** (15) 0000-0000 não pertence a ninguém, porque nenhum telefone no Brasil começa com 0. Na página publicada, num celular, o esperado é: o formulário abre o WhatsApp com a mensagem pronta, e o WhatsApp avisa que o número é inválido. Esse é o comportamento aceito na D3. Quando o número real entrar, este item passa a ser: um pedido enviado da página publicada chega ao WhatsApp da Ravena.
 
 ## 3. Nenhuma palavra proibida no HTML
 
 O script procura em `index.html`, sem diferenciar maiúsculas: "energia do futuro", "sustentabilidade", "sustentável", "revolução solar", "grátis", "gratis", "95%" e "95 %". **Nenhuma ocorrência.**
 
-Prazos encontrados no HTML: só "45 a 60 dias" (contrato até o sistema ligado) e "2 dias" (duração da instalação, que vem do brief). Nenhum outro prazo.
+Prazos encontrados no HTML: só "45 a 60 dias" (contrato até o sistema ligado) e "2 dias" (duração da instalação, que vem do brief).
 
 ## 4. Cada número da página confere com o brief
 
@@ -69,7 +81,7 @@ O script extrai todos os números do texto visível e exige que cada um tenha um
 | 45 a 60 dias | "de 45 a 60 dias entre a assinatura e o sistema ligado" |
 | 80 km | "num raio de 80 km" |
 
-**Nenhum número sem fonte.**
+**Nenhum número sem fonte.** O número fictício do WhatsApp não está na lista porque não aparece no texto da página (item 2).
 
 ## 5. Funciona e pode ser lida num celular de 375 px
 
@@ -78,7 +90,11 @@ O script extrai todos os números do texto visível e exige que cada um tenha um
 - Campos e botões com pelo menos 48 px de altura (44 px no botão do topo).
 - Capturas da página inteira: `04-pagina-inteira-375px.png` (celular) e `05-pagina-inteira-1280px.png` (desktop).
 
+## 6. Publicação
+
+Vercel, ligada ao repositório `iajuss/energia_trilha` (D2). Cada push no `main` publica sozinho. A seção "Publicado" abaixo registra a URL e a conferência da página no ar.
+
 ## Também conferido
 
 - Contraste (WCAG 2.1, calculado): texto azul sobre branco 11,92; botão com texto azul sobre sol 5,60. O laranja (3,06 sobre branco) só aparece em texto grande e em elementos não textuais. Detalhes em `DESIGN.md`.
-- A página não tem telefone, WhatsApp nem endereço da Ravena, e nenhum link sai da página.
+- Nenhum link sai da página além do WhatsApp do formulário.

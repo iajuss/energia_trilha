@@ -1,4 +1,4 @@
-// Verificação da página P1 — roda os testes de "Como verifico" da SPEC.md.
+// Verificação da página P1 — roda os testes de "Como verifico" da SPEC.md, com o envio pelo WhatsApp (DECISOES.md, D1).
 // Uso: npm install && npm run verificar  (usa o Microsoft Edge instalado, sem baixar navegador)
 import { chromium } from 'playwright-core';
 import { createServer } from 'node:http';
@@ -28,84 +28,106 @@ function registrar(nome, passou, detalhe) {
 
 const navegador = await chromium.launch({ channel: 'msedge' });
 
-// Abre a página a 375 px e intercepta o Formspree: cada POST é registrado e respondido com 200,
-// sem chegar ao serviço de verdade.
+// Abre a página a 375 px e intercepta o WhatsApp: cada abertura de wa.me é registrada e
+// respondida com uma página vazia, sem sair para o WhatsApp de verdade.
+const html = await readFile(join(raiz, 'index.html'), 'utf8');
+const numeroConfigurado = (html.match(/WHATSAPP_RAVENA = '([^']*)'/) || [])[1];
+
 async function abrir(largura = 375, altura = 812) {
-  const pagina = await navegador.newPage({ viewport: { width: largura, height: altura } });
-  const posts = [];
-  await pagina.route('https://formspree.io/**', async (rota) => {
-    const r = rota.request();
-    posts.push({ metodo: r.method(), url: r.url(), corpo: JSON.parse(r.postData() || '{}') });
-    await rota.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+  const contexto = await navegador.newContext({ viewport: { width: largura, height: altura } });
+  const aberturas = [];
+  await contexto.route(/^https:\/\/(wa\.me|api\.whatsapp\.com)\//, async (rota) => {
+    const u = new URL(rota.request().url());
+    aberturas.push({ url: u.href, numero: u.pathname.slice(1), texto: u.searchParams.get('text') || '' });
+    await rota.fulfill({ status: 200, contentType: 'text/html', body: '<p>WhatsApp (interceptado)</p>' });
   });
+  const pagina = await contexto.newPage();
   await pagina.goto(base);
-  return { pagina, posts };
+  return { pagina, aberturas };
 }
 
 async function preencher(pagina, { cidade = 'Sorocaba', conta }) {
   await pagina.fill('#nome', 'Teste Verificação');
-  await pagina.fill('#whatsapp', '(15) 99999-0000');
   await pagina.selectOption('#cidade', cidade);
   await pagina.fill('#conta', conta);
   await pagina.click('#enviar');
-  await pagina.waitForTimeout(400);
+  await pagina.waitForTimeout(600);
 }
 
-// 1. Conta de R$ 300: nenhum POST e aparece a explicação
+// 0. O número no link tem formato de WhatsApp (DDI 55 + DDD + número) e não aparece como texto na página.
+//    Hoje é o fictício 551500000000 (DECISOES.md, D3): nenhum número no Brasil começa com 0.
+const ficticio = numeroConfigurado === '551500000000';
+registrar('Número do WhatsApp em formato válido de link' + (ficticio ? ' (FICTÍCIO, ver D3)' : ''),
+  /^55\d{10,11}$/.test(numeroConfigurado || ''), `WHATSAPP_RAVENA = '${numeroConfigurado}'`);
 {
-  const { pagina, posts } = await abrir();
+  const { pagina } = await abrir();
+  const texto = (await pagina.evaluate(() => document.body.innerText)).replace(/\D/g, '');
+  const local = (numeroConfigurado || '').slice(2);
+  registrar('Número da Ravena não aparece como texto na página', !texto.includes(local), `procurado: ${local}`);
+  await pagina.close();
+}
+
+// 1. Conta de R$ 300: o WhatsApp não abre e aparece a explicação
+{
+  const { pagina, aberturas } = await abrir();
   await preencher(pagina, { conta: '300' });
   const aviso = await pagina.isVisible('#aviso-conta');
-  registrar('Conta R$ 300 não envia e mostra a explicação', posts.length === 0 && aviso,
-    `POSTs: ${posts.length}; explicação visível: ${aviso}`);
+  registrar('Conta R$ 300 não abre o WhatsApp e mostra a explicação', aberturas.length === 0 && aviso,
+    `aberturas do WhatsApp: ${aberturas.length}; explicação visível: ${aviso}`);
   await pagina.locator('#simulacao').screenshot({ path: join(saida, '01-conta-300-bloqueada-375px.png') });
   await pagina.close();
 }
 
-// 2. Conta de R$ 450: o POST sai com os quatro campos
+// 2. Conta de R$ 450: abre o WhatsApp da Ravena com nome, cidade e conta na mensagem
 {
-  const { pagina, posts } = await abrir();
+  const { pagina, aberturas } = await abrir();
   await preencher(pagina, { conta: '450' });
-  const c = posts[0]?.corpo || {};
-  const quatro = ['nome', 'whatsapp', 'cidade', 'conta'].every((k) => c[k]);
+  const a = aberturas[0] || { texto: '', numero: '' };
+  const esperado = ['Simulação pelo site', 'Nome: Teste Verificação', 'Cidade: Sorocaba', 'Conta de luz média: R$ 450,00'];
+  const faltando = esperado.filter((t) => !a.texto.includes(t));
   const ok = await pagina.isVisible('#ok');
-  registrar('Conta R$ 450 envia POST com os quatro campos', posts.length === 1 && posts[0].metodo === 'POST' && quatro && ok,
-    `POSTs: ${posts.length}; corpo: ${JSON.stringify(c)}; confirmação visível: ${ok}`);
+  registrar('Conta R$ 450 abre o WhatsApp com nome, cidade e conta', aberturas.length === 1 && faltando.length === 0 && ok,
+    `aberturas: ${aberturas.length}; mensagem: ${JSON.stringify(a.texto)}` + (faltando.length ? `; FALTANDO: ${faltando.join(' | ')}` : ''));
+  registrar('Mensagem vai para o número da Ravena', a.numero === numeroConfigurado, `número no link: ${a.numero}`);
+  const href = await pagina.getAttribute('#abrir-zap', 'href');
+  registrar('Botão "Abrir o WhatsApp de novo" aponta para o mesmo link', href === a.url);
   const texto = await pagina.textContent('#ok');
-  registrar('Confirmação pede a foto da conta pelo WhatsApp', /foto/.test(texto) && /WhatsApp/.test(texto));
-  await pagina.locator('#simulacao').screenshot({ path: join(saida, '02-conta-450-enviada-375px.png') });
+  registrar('Confirmação manda apertar enviar e pede a foto da conta', /apertar enviar/.test(texto) && /foto/.test(texto));
+  await pagina.locator('#simulacao').screenshot({ path: join(saida, '02-conta-450-whatsapp-375px.png') });
   await pagina.close();
 }
 
 // 3. Limites e formatos brasileiros
-for (const [valor, deveEnviar] of [['449,99', false], ['R$ 449', false], ['450,00', true], ['R$ 1.200,00', true], ['1.200', true]]) {
-  const { pagina, posts } = await abrir();
+for (const [valor, deveAbrir, naMensagem] of [['449,99', false], ['R$ 449', false], ['450,00', true, 'R$ 450,00'], ['R$ 1.200,00', true, 'R$ 1.200,00'], ['1.200', true, 'R$ 1.200,00']]) {
+  const { pagina, aberturas } = await abrir();
   await preencher(pagina, { conta: valor });
-  registrar(`Conta "${valor}" ${deveEnviar ? 'envia' : 'não envia'}`, (posts.length === 1) === deveEnviar,
-    `POSTs: ${posts.length}${posts[0] ? '; conta enviada: ' + posts[0].corpo.conta : ''}`);
+  const conta = (aberturas[0]?.texto.match(/Conta de luz média: (.*)/) || [])[1];
+  registrar(`Conta "${valor}" ${deveAbrir ? 'abre o WhatsApp' : 'não abre'}`,
+    (aberturas.length === 1) === deveAbrir && (!deveAbrir || conta === naMensagem),
+    `aberturas: ${aberturas.length}${conta ? '; conta na mensagem: ' + conta : ''}`);
   await pagina.close();
 }
 
-// 4. "Outra cidade da região": aviso de 80 km aparece e o pedido é enviado mesmo assim
+// 4. "Outra cidade da região": aviso de 80 km aparece e o pedido segue mesmo assim
 {
-  const { pagina, posts } = await abrir();
+  const { pagina, aberturas } = await abrir();
   await pagina.selectOption('#cidade', 'Outra cidade da região');
   const aviso = await pagina.isVisible('#aviso-cidade');
   const textoAviso = await pagina.textContent('#aviso-cidade');
   await pagina.locator('#cidade').locator('xpath=..').screenshot({ path: join(saida, '03-outra-cidade-aviso-375px.png') });
   await preencher(pagina, { cidade: 'Outra cidade da região', conta: '900' });
-  registrar('Outra cidade mostra aviso de 80 km e envia', aviso && /80 km/.test(textoAviso) && posts.length === 1,
-    `aviso visível: ${aviso}; POSTs: ${posts.length}`);
+  registrar('Outra cidade mostra aviso de 80 km e abre o WhatsApp', aviso && /80 km/.test(textoAviso) && aberturas.length === 1
+    && aberturas[0].texto.includes('Cidade: Outra cidade da região'), `aviso visível: ${aviso}; aberturas: ${aberturas.length}`);
   await pagina.close();
 }
 
 // 5. Campos obrigatórios
 {
-  const { pagina, posts } = await abrir();
+  const { pagina, aberturas } = await abrir();
   await pagina.click('#enviar');
   await pagina.waitForTimeout(200);
   const erros = await pagina.locator('[aria-invalid="true"]').count();
-  registrar('Formulário vazio não envia e marca os 4 campos', posts.length === 0 && erros === 4, `campos marcados: ${erros}`);
+  registrar('Formulário vazio não abre o WhatsApp e marca os 3 campos', aberturas.length === 0 && erros === 3, `campos marcados: ${erros}`);
   await pagina.close();
 }
 
@@ -131,11 +153,11 @@ for (const [valor, deveEnviar] of [['449,99', false], ['R$ 449', false], ['450,0
 
 // 7. Palavras proibidas pelo brief
 {
-  const html = (await readFile(join(raiz, 'index.html'), 'utf8')).toLowerCase();
+  const minusculo = html.toLowerCase();
   const proibidas = ['energia do futuro', 'sustentabilidade', 'sustentável', 'revolução solar', 'grátis', 'gratis', '95%', '95 %'];
-  const achadas = proibidas.filter((p) => html.includes(p));
+  const achadas = proibidas.filter((p) => minusculo.includes(p));
   registrar('Nenhuma palavra proibida no HTML', achadas.length === 0, achadas.length ? `achadas: ${achadas.join(', ')}` : proibidas.join(' · '));
-  const prazos = [...html.matchAll(/\d+\s*(?:a\s*\d+\s*)?dias/g)].map((m) => m[0]);
+  const prazos = [...minusculo.matchAll(/\d+\s*(?:a\s*\d+\s*)?dias/g)].map((m) => m[0]);
   const prazosOk = prazos.every((p) => p === '45 a 60 dias' || p === '2 dias');
   registrar('Único prazo de entrega é 45 a 60 dias (2 dias = instalação)', prazosOk, `prazos no HTML: ${prazos.join(' · ')}`);
 }

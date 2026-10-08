@@ -68,20 +68,23 @@ A família vem da própria logo: o `<text>` do SVG declara `font-family="Helveti
 
 ## Formulário: comportamento
 
+O envio é pelo WhatsApp (decisão D1 em `DECISOES.md`). O formulário tem três campos: nome, cidade e valor da conta.
+
 | Situação | O que acontece |
 |---|---|
-| Campo vazio ou WhatsApp com menos de 10 dígitos | Erro no campo, nada é enviado |
-| Conta < R$ 450 | Aparece a explicação. **Nenhum POST.** O botão continua lá, para quem digitou errado corrigir |
-| Conta ≥ R$ 450 | `fetch` POST JSON para o Formspree com `nome`, `whatsapp`, `cidade` e `conta` |
-| "Outra cidade da região" | Aviso de 80 km aparece ao escolher. O envio segue normal |
-| Envio OK | O formulário some e a confirmação diz que a resposta vem por WhatsApp no mesmo dia útil e que mandar a foto da conta por lá agiliza |
-| Envio falhou | Mensagem pedindo para tentar de novo. Os dados ficam no formulário. Não aparece telefone, porque a página não tem nenhum |
+| Campo vazio | Erro no campo, o WhatsApp não abre |
+| Conta < R$ 450 | Aparece a explicação. **O WhatsApp não abre.** O botão continua lá, para quem digitou errado corrigir |
+| Conta ≥ R$ 450 | Abre `wa.me/<número da Ravena>` com a mensagem pronta: a etiqueta "Simulação pelo site", saudação, nome, cidade e conta formatada ("R$ 1.200,00") |
+| "Outra cidade da região" | Aviso de 80 km aparece ao escolher. O pedido segue normal |
+| Depois do clique | O formulário dá lugar à confirmação: falta apertar enviar no WhatsApp, a resposta vem no mesmo dia útil e vale mandar a foto ou o PDF da conta na mesma conversa. O botão "Abrir o WhatsApp de novo" cobre navegador que bloqueou a nova aba |
+
+O botão do formulário diz "Enviar pelo WhatsApp", para a pessoa saber que vai sair da página. Os botões do topo e do hero continuam "Pedir simulação", porque só levam até o formulário.
 
 O valor da conta aceita "780", "780,50", "1.200" e "R$ 1.200,00". O formato brasileiro é convertido antes da comparação com 450.
 
-## Serviço de formulário
+## Envio
 
-Formspree, plano Free: **50 envios por mês** (conferido em formspree.io/plans em 07/10/2026). É o dobro da meta de 25, com folga sobre os ~12 de hoje. Ele também avisa por e-mail. O painel do Free guarda os envios por 30 dias, então o histórico permanente é a caixa de e-mail. Se a página passar de 50 pedidos por mês, é hora de mudar de plano, e esse é um bom problema.
+`wa.me` com o número da Ravena na constante `WHATSAPP_RAVENA` do script. Não há serviço intermediário, conta, limite de envios nem chave. O número fica só no link e não aparece como texto na página.
 
 ## O que o design deixa de fora
 
