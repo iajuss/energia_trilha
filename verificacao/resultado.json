@@ -1,0 +1,79 @@
+{
+  "data": "2026-10-08T02:01:40.711Z",
+  "resultados": [
+    {
+      "teste": "Conta R$ 300 não envia e mostra a explicação",
+      "passou": true,
+      "detalhe": "POSTs: 0; explicação visível: true"
+    },
+    {
+      "teste": "Conta R$ 450 envia POST com os quatro campos",
+      "passou": true,
+      "detalhe": "POSTs: 1; corpo: {\"nome\":\"Teste Verificação\",\"whatsapp\":\"(15) 99999-0000\",\"cidade\":\"Sorocaba\",\"conta\":\"450,00\",\"_subject\":\"Pedido de simulação — Sorocaba — R$ 450\"}; confirmação visível: true"
+    },
+    {
+      "teste": "Confirmação pede a foto da conta pelo WhatsApp",
+      "passou": true
+    },
+    {
+      "teste": "Conta \"449,99\" não envia",
+      "passou": true,
+      "detalhe": "POSTs: 0"
+    },
+    {
+      "teste": "Conta \"R$ 449\" não envia",
+      "passou": true,
+      "detalhe": "POSTs: 0"
+    },
+    {
+      "teste": "Conta \"450,00\" envia",
+      "passou": true,
+      "detalhe": "POSTs: 1; conta enviada: 450,00"
+    },
+    {
+      "teste": "Conta \"R$ 1.200,00\" envia",
+      "passou": true,
+      "detalhe": "POSTs: 1; conta enviada: 1200,00"
+    },
+    {
+      "teste": "Conta \"1.200\" envia",
+      "passou": true,
+      "detalhe": "POSTs: 1; conta enviada: 1200,00"
+    },
+    {
+      "teste": "Outra cidade mostra aviso de 80 km e envia",
+      "passou": true,
+      "detalhe": "aviso visível: true; POSTs: 1"
+    },
+    {
+      "teste": "Formulário vazio não envia e marca os 4 campos",
+      "passou": true,
+      "detalhe": "campos marcados: 4"
+    },
+    {
+      "teste": "Sem rolagem horizontal a 375 px",
+      "passou": true,
+      "detalhe": "scrollWidth 375 / viewport 375"
+    },
+    {
+      "teste": "Texto corrido com pelo menos 15 px no celular",
+      "passou": true,
+      "detalhe": "menor fonte: 15px"
+    },
+    {
+      "teste": "Nenhuma palavra proibida no HTML",
+      "passou": true,
+      "detalhe": "energia do futuro · sustentabilidade · sustentável · revolução solar · grátis · gratis · 95% · 95 %"
+    },
+    {
+      "teste": "Único prazo de entrega é 45 a 60 dias (2 dias = instalação)",
+      "passou": true,
+      "detalhe": "prazos no HTML: 2 dias · 45 a 60 dias · 2 dias"
+    },
+    {
+      "teste": "Todo número visível tem trecho correspondente no brief",
+      "passou": true,
+      "detalhe": "números na página: 450 75 90 780 118 6,4 2025 6 412 4,8 137 5 2 14.300 8 12 20 14 19 3 4 25 10 45 60 80"
+    }
+  ]
+}

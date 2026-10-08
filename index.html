@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ravena Solar — Simulação de energia solar para casa em Sorocaba, Votorantim, Itu e Salto</title>
+<meta name="description" content="Para quem paga mais de R$ 450 de luz em Sorocaba, Votorantim, Itu ou Salto. Peça uma simulação: resposta por WhatsApp no mesmo dia útil.">
+<link rel="icon" href="material/logo.svg" type="image/svg+xml">
+<style>
+/* Cores: copiadas de material/logo.svg — ver DESIGN.md */
+:root{
+  --azul:#123A55;      /* telhado e texto "RAVENA" */
+  --sol:#F2A03D;       /* sol e raios */
+  --laranja:#E8721C;   /* texto "SOLAR" */
+  --branco:#FFFFFF;    /* linhas do painel */
+  --azul-texto2:color-mix(in srgb,var(--azul) 78%,var(--branco));
+  --azul-fundo:color-mix(in srgb,var(--azul) 6%,var(--branco));
+  --sol-fundo:color-mix(in srgb,var(--sol) 16%,var(--branco));
+  --fonte:"Helvetica Neue",Helvetica,Arial,sans-serif; /* font-family do <text> da logo */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--fonte);font-size:1.0625rem;line-height:1.6;color:var(--azul);background:var(--branco)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--laranja);outline-offset:2px}
+.wrap{max-width:44rem;margin:0 auto;padding:0 16px}
+.wrap-largo{max-width:64rem;margin:0 auto;padding:0 16px}
+h1,h2,h3{line-height:1.2;font-weight:700}
+h1{font-size:clamp(1.75rem,5vw,2.75rem)}
+h2{font-size:clamp(1.375rem,3.5vw,1.875rem);margin-bottom:1rem}
+h3{font-size:1.125rem}
+p+p{margin-top:.75rem}
+.apoio{color:var(--azul-texto2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.75rem 1.5rem;border:0;border-radius:6px;background:var(--sol);color:var(--azul);font:700 1.0625rem/1.2 var(--fonte);text-decoration:none;cursor:pointer}
+.btn:hover{background:color-mix(in srgb,var(--sol) 88%,var(--azul))}
+section{padding:3.5rem 0}
+section.alt{background:var(--azul-fundo)}
+
+/* Topo */
+header .wrap-largo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
+header img{display:block;height:40px;width:auto}
+header .btn{min-height:44px;padding:.5rem 1rem;font-size:.9375rem}
+
+/* Hero */
+.hero{background:var(--azul);color:var(--branco);padding:3rem 0 3.5rem}
+.hero .grid{display:grid;gap:2rem}
+.hero .lead{font-size:1.1875rem;margin-top:1rem}
+.hero .filtro{margin-top:1rem;font-size:1rem;border-left:3px solid var(--sol);padding-left:.75rem}
+.hero .btn{margin-top:1.5rem}
+.caso{border:1px solid color-mix(in srgb,var(--branco) 30%,var(--azul));border-radius:8px;padding:1.25rem}
+.caso .rot{font-size:.9375rem;font-weight:300;letter-spacing:.08em;text-transform:uppercase}
+.caso .valores{display:flex;flex-wrap:wrap;align-items:baseline;gap:.25rem 1rem;margin:.5rem 0}
+.caso .antes{font-size:1.5rem;text-decoration:line-through;text-decoration-thickness:2px}
+.caso .seta{font-size:1.5rem;color:var(--sol)}
+.caso .depois{font-size:2.75rem;font-weight:700;color:var(--sol);line-height:1}
+.caso .depois small{font-size:1rem;font-weight:400}
+.caso p{font-size:.9375rem}
+
+/* Números */
+.numeros{display:grid;gap:1rem;list-style:none;margin:1.5rem 0}
+.numeros li{border-left:3px solid var(--laranja);padding-left:.875rem}
+.numeros strong{display:block;font-size:2rem;line-height:1.1}
+.lista{margin:1rem 0 0 1.25rem}
+.lista li+li{margin-top:.5rem}
+
+/* Preço */
+.preco{display:grid;gap:0;border-top:1px solid color-mix(in srgb,var(--azul) 20%,var(--branco));margin-top:1.25rem}
+.preco div{display:grid;gap:.25rem;padding:1rem 0;border-bottom:1px solid color-mix(in srgb,var(--azul) 20%,var(--branco))}
+.preco dt{font-weight:300;font-size:.9375rem;letter-spacing:.04em;text-transform:uppercase}
+.preco dd{font-size:1.25rem;font-weight:700}
+.preco dd span{display:block;font-size:1rem;font-weight:400;color:var(--azul-texto2)}
+
+/* Etapas */
+.etapas{list-style:none;counter-reset:e;margin-top:1.25rem}
+.etapas li{counter-increment:e;display:grid;grid-template-columns:2.5rem 1fr;gap:.75rem;padding:.75rem 0}
+.etapas li::before{content:counter(e);font-size:2rem;font-weight:700;line-height:1;color:var(--laranja)}
+.prazo{margin-top:1.5rem;padding:1rem 1.25rem;background:var(--branco);border-left:3px solid var(--laranja)}
+
+/* Formulário */
+#simulacao{background:var(--azul);color:var(--branco)}
+#simulacao .caixa{background:var(--branco);color:var(--azul);border-radius:8px;padding:1.5rem 1.25rem;margin-top:1.5rem}
+form{display:grid;gap:1.25rem}
+.campo{display:grid;gap:.375rem}
+label{font-weight:700}
+.dica{font-size:.9375rem;color:var(--azul-texto2)}
+input,select{width:100%;min-height:48px;padding:.625rem .75rem;border:2px solid color-mix(in srgb,var(--azul) 45%,var(--branco));border-radius:6px;background:var(--branco);color:var(--azul);font:1.0625rem var(--fonte)}
+input:focus,select:focus{border-color:var(--azul)}
+.campo.erro input,.campo.erro select{border-color:var(--laranja)}
+.msg-erro{font-size:.9375rem;font-weight:700}
+.msg-erro:empty{display:none}
+.aviso{background:var(--sol-fundo);border-left:4px solid var(--laranja);padding:1rem;border-radius:0 6px 6px 0}
+.aviso h3{margin-bottom:.5rem}
+.aviso p{font-size:1rem}
+[hidden]{display:none!important}
+form .btn{width:100%}
+.ok h3{font-size:1.375rem;margin-bottom:.75rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.honey{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+footer{padding:2rem 0;font-size:.9375rem}
+footer img{height:32px;width:auto;display:block;margin-bottom:.75rem}
+
+@media (min-width:720px){
+  .hero .grid{grid-template-columns:1.3fr 1fr;align-items:center}
+  .numeros{grid-template-columns:1fr 1fr}
+  .preco div{grid-template-columns:12rem 1fr;align-items:baseline}
+  #simulacao .caixa{padding:2rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap-largo">
+    <img src="material/logo.svg" alt="Ravena Solar" width="150" height="40">
+    <a class="btn" href="#simulacao">Pedir simulação</a>
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <div class="wrap-largo grid">
+    <div>
+      <h1>Paga mais de R$ 450 de luz em Sorocaba, Votorantim, Itu ou Salto? A conta pode cair entre 75% e 90%.</h1>
+      <p class="lead">Energia solar na sua casa, com projeto, instalação e acompanhamento feitos pela nossa própria equipe.</p>
+      <p class="filtro">Abaixo de R$ 450 por mês, o sistema não se paga. Nós mesmos desaconselhamos — e dizemos isso antes de você pedir.</p>
+      <a class="btn" href="#simulacao">Pedir simulação</a>
+    </div>
+    <figure class="caso" aria-label="Caso com números conferidos">
+      <p class="rot">Caso conferido · Sorocaba</p>
+      <div class="valores">
+        <span class="antes"><span class="sr">Antes: </span>R$ 780</span>
+        <span class="seta" aria-hidden="true">→</span>
+        <span class="depois"><span class="sr">Depois: </span>R$ 118<small> /mês</small></span>
+      </div>
+      <p>Conta de luz antes e depois. Sistema de 6,4 kWp instalado em março de 2025. R$ 118 é a média dos últimos doze meses.</p>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>“Como sei que vocês não vão sumir daqui a dois anos?”</h2>
+    <p>A região já viu empresa fechar com obra pela metade. Por isso, em vez de promessa, números:</p>
+    <ul class="numeros">
+      <li><strong>6 anos</strong> de empresa, com sede em Sorocaba</li>
+      <li><strong>412</strong> sistemas residenciais instalados</li>
+      <li><strong>4,8</strong> de nota no Google, com 137 avaliações</li>
+      <li><strong>Equipe própria</strong> com carteira assinada — não terceirizamos a instalação</li>
+    </ul>
+    <ul class="lista">
+      <li>Somos assistência técnica autorizada da marca de inversor que instalamos.</li>
+      <li>No primeiro ano, acompanhamos a produção do seu sistema e ligamos se ela cair fora do previsto.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>“Isso não vai estragar meu telhado?”</h2>
+    <p>A instalação tem <strong>5 anos de garantia</strong>, incluindo qualquer infiltração causada pela obra.</p>
+    <p>Quem sobe no seu telhado é a nossa equipe, não uma empresa terceirizada. A instalação em si leva 2 dias.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>“Ouvi dizer que taxaram o sol. Ainda vale a pena?”</h2>
+    <p>Desde a Lei 14.300 existe uma cobrança sobre a energia que a sua casa injeta na rede, e ela aumenta ano a ano. Continua valendo a pena, mas o cálculo mudou.</p>
+    <p>A casa de Sorocaba do caso acima foi ligada em março de 2025, já sob essa regra: a conta foi de R$ 780 para R$ 118. A nossa simulação já considera essa cobrança.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>Quanto custa</h2>
+    <p>Quem pede três orçamentos compara preço. Estas são as faixas reais para casa:</p>
+    <dl class="preco">
+      <div><dt>Sistema</dt><dd>5 a 8 kWp<span>de 12 a 20 painéis no telhado</span></dd></div>
+      <div><dt>Investimento</dt><dd>R$ 14 mil a R$ 19 mil</dd></div>
+      <div><dt>Conta de luz</dt><dd>cai entre 75% e 90%<span>Não zera: sempre resta a taxa mínima da distribuidora e o custo do fio.</span></dd></div>
+      <div><dt>Retorno</dt><dd>de 3 a 4 anos</dd></div>
+      <div><dt>Financiamento</dt><dd>entrada zero é possível<span>Na maioria dos casos, a parcela fica perto do valor que você já paga de luz.</span></dd></div>
+      <div><dt>Garantias</dt><dd>25 anos do painel<span>10 anos do inversor · 5 anos da instalação</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>O que acontece depois do pedido</h2>
+    <ol class="etapas">
+      <li><div><h3>Resposta no mesmo dia útil</h3><p>Pelo WhatsApp que você informar.</p></div></li>
+      <li><div><h3>Visita técnica ao telhado</h3><p>Sem custo e sem compromisso.</p></div></li>
+      <li><div><h3>Proposta com três tamanhos de sistema</h3><p>Você escolhe com os números na mão.</p></div></li>
+    </ol>
+    <p class="prazo"><strong>Do contrato ao sistema ligado: 45 a 60 dias.</strong> A instalação leva 2 dias. O resto é projeto e homologação na CPFL, a parte que não depende de nós.</p>
+  </div>
+</section>
+
+<section id="simulacao">
+  <div class="wrap">
+    <h2>Pedir simulação</h2>
+    <p>Nome, WhatsApp, cidade e o valor da conta. A resposta vem pelo seu WhatsApp no mesmo dia útil.</p>
+
+    <div class="caixa">
+      <form id="form-simulacao" novalidate data-endpoint="https://formspree.io/f/SEU_ID_AQUI">
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input id="nome" name="nome" type="text" autocomplete="name" required aria-describedby="erro-nome">
+          <p class="msg-erro" id="erro-nome" aria-live="polite"></p>
+        </div>
+
+        <div class="campo">
+          <label for="whatsapp">WhatsApp com DDD</label>
+          <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required aria-describedby="dica-whatsapp erro-whatsapp">
+          <p class="dica" id="dica-whatsapp">É por aqui que respondemos.</p>
+          <p class="msg-erro" id="erro-whatsapp" aria-live="polite"></p>
+        </div>
+
+        <div class="campo">
+          <label for="cidade">Cidade</label>
+          <select id="cidade" name="cidade" required aria-describedby="erro-cidade">
+            <option value="">Escolha</option>
+            <option>Sorocaba</option>
+            <option>Votorantim</option>
+            <option>Itu</option>
+            <option>Salto</option>
+            <option>Outra cidade da região</option>
+          </select>
+          <p class="msg-erro" id="erro-cidade" aria-live="polite"></p>
+          <div class="aviso" id="aviso-cidade" role="status" hidden>
+            <p>Atendemos até 80 km de Sorocaba. Pode enviar: confirmamos a distância na resposta.</p>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="conta">Valor médio da conta de luz por mês</label>
+          <input id="conta" name="conta" type="text" inputmode="decimal" placeholder="R$" required aria-describedby="dica-conta erro-conta">
+          <p class="dica" id="dica-conta">Pode ser aproximado, em reais.</p>
+          <p class="msg-erro" id="erro-conta" aria-live="polite"></p>
+        </div>
+
+        <div class="aviso" id="aviso-conta" role="status" hidden>
+          <h3>Com essa conta, o sistema não se paga</h3>
+          <p>A conta de luz nunca zera: sempre resta a taxa mínima da distribuidora e o custo do fio. Abaixo de R$ 450 por mês, o que o sistema consegue cortar é pouco para pagar um investimento de R$&nbsp;14&nbsp;mil a R$&nbsp;19&nbsp;mil — e nós mesmos desaconselhamos.</p>
+          <p>Por isso não vamos enviar o pedido. Se o valor digitado estiver errado, é só corrigir acima.</p>
+        </div>
+
+        <div class="honey" aria-hidden="true">
+          <label for="_gotcha">Não preencha</label>
+          <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <p class="msg-erro" id="erro-envio" role="alert"></p>
+        <button class="btn" type="submit" id="enviar">Pedir simulação</button>
+      </form>
+
+      <div class="ok" id="ok" role="status" tabindex="-1" hidden>
+        <h3>Pedido recebido.</h3>
+        <p>Respondemos pelo WhatsApp que você informou, no mesmo dia útil.</p>
+        <p><strong>Para agilizar:</strong> quando receber a nossa mensagem, mande por lá uma foto ou o PDF da sua conta de luz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="material/logo.svg" alt="Ravena Solar" width="120" height="32">
+    <p class="apoio">Integradora de energia solar residencial com sede em Sorocaba. Atendemos Sorocaba, Votorantim, Itu e Salto, num raio de 80 km.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var CONTA_MINIMA = 450;
+  var form = document.getElementById('form-simulacao');
+  var endpoint = form.getAttribute('data-endpoint');
+  var cidade = document.getElementById('cidade');
+  var avisoCidade = document.getElementById('aviso-cidade');
+  var avisoConta = document.getElementById('aviso-conta');
+  var erroEnvio = document.getElementById('erro-envio');
+  var botao = document.getElementById('enviar');
+
+  cidade.addEventListener('change', function(){
+    avisoCidade.hidden = cidade.value !== 'Outra cidade da região';
+  });
+
+  // Aceita "780", "780,50", "1.200", "R$ 1.200,00", "1200.50"
+  function lerReais(texto){
+    var t = String(texto).replace(/[^\d.,]/g, '');
+    if (!t) return NaN;
+    if (t.indexOf(',') !== -1) {
+      t = t.replace(/\./g, '').replace(',', '.');
+    } else if (/\.\d{3}$/.test(t) || (t.match(/\./g) || []).length > 1) {
+      t = t.replace(/\./g, '');
+    }
+    return parseFloat(t);
+  }
+
+  function marcar(id, msg){
+    var el = document.getElementById(id);
+    document.getElementById('erro-' + id).textContent = msg || '';
+    el.parentNode.classList.toggle('erro', !!msg);
+    if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid');
+    return !msg;
+  }
+
+  function validar(){
+    var nome = form.nome.value.trim();
+    var zap = form.whatsapp.value.replace(/\D/g, '');
+    var conta = lerReais(form.conta.value);
+    var ok = true;
+    ok = marcar('nome', nome ? '' : 'Informe seu nome.') && ok;
+    ok = marcar('whatsapp', (zap.length >= 10 && zap.length <= 13) ? '' : 'Informe o WhatsApp com DDD.') && ok;
+    ok = marcar('cidade', cidade.value ? '' : 'Escolha a cidade.') && ok;
+    ok = marcar('conta', isNaN(conta) ? 'Informe o valor médio da conta.' : '') && ok;
+    return ok ? { nome: nome, whatsapp: form.whatsapp.value.trim(), cidade: cidade.value, conta: conta } : null;
+  }
+
+  form.conta.addEventListener('input', function(){ avisoConta.hidden = true; });
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    erroEnvio.textContent = '';
+    var dados = validar();
+    if (!dados) {
+      var primeiro = form.querySelector('[aria-invalid="true"]');
+      if (primeiro) primeiro.focus();
+      return;
+    }
+    if (dados.conta < CONTA_MINIMA) {
+      avisoConta.hidden = false;
+      avisoConta.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      return; // não envia
+    }
+    avisoConta.hidden = true;
+    if (form._gotcha.value) return;
+
+    botao.disabled = true;
+    botao.textContent = 'Enviando…';
+    fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        nome: dados.nome,
+        whatsapp: dados.whatsapp,
+        cidade: dados.cidade,
+        conta: dados.conta.toFixed(2).replace('.', ','),
+        _subject: 'Pedido de simulação — ' + dados.cidade + ' — R$ ' + dados.conta.toFixed(0)
+      })
+    }).then(function(r){
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      form.hidden = true;
+      var ok = document.getElementById('ok');
+      ok.hidden = false;
+      ok.focus();
+    }).catch(function(){
+      erroEnvio.textContent = 'Não conseguimos enviar agora. Seus dados continuam aqui: tente de novo em alguns minutos.';
+      botao.disabled = false;
+      botao.textContent = 'Pedir simulação';
+    });
+  });
+})();
+</script>
+</body>
+</html>

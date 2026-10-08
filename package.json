@@ -1,0 +1,11 @@
+{
+  "name": "ravena-solar-p1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verificar": "node verificacao/verificar.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.48.0"
+  }
+}
